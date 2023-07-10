@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"raw_tweet_id":{"$numberInt":"1"}},"name":"analisis_analisis_raw_tweet_id_c60d2965"}],"uuid":"8b4c1c900c114c81b5093c0dd5771cc9","collectionName":"analisis_analisis","type":"collection"}

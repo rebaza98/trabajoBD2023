@@ -1,0 +1,205 @@
+{% extends 'base.html' %} {% load static %}
+{% block content %}
+        
+    
+        
+    <div class="app-content content ">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                    <div class="row breadcrumbs-top">
+                        <div class="col-12">
+                            <h2 class="content-header-title float-left mb-0">Historico
+                                {% if filtrado %}
+                                <span id="spanFiltrado" style="cursor: pointer" data-url="{% url 'lista_historico' %}" class="badge badge-warning">FILTRADO</span>
+                                {% endif %}
+                            </h2>
+                            
+                        </div>
+                    </div>
+                </div>
+              
+            </div>
+            <div class="content-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card" >
+                            <div class="card-header">
+                                <h4 class="card-title">Criterios de Busqueda</h4>
+                            </div>
+                            <div class="card-body">
+                                <form method="get" action="">
+                                    <div class="row">
+                                        <div class="col-xl-2 col-md-2 col-12 mb-1">
+                                            <div class="form-group">
+                                                <label for="basicInput">Rating</label>
+                                                <input type="number" class="form-control" id="basicInput" name="rating" placeholder="Ingrese Rating" value="{{request.GET.rating}}"  />
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-2 col-md-2 col-12 mb-1">
+                                            <div class="form-group">
+                                                <label for="basicSelect">Sentimiento</label>
+                                                <select name="sentimiento" class="form-control" id="selectSentimiento">
+                                                    <option value="" >-----</option>
+                                                    <option value="POSITIVO" >POSITIVO</option>
+                                                    <option value="NEUTRAL" >NEUTRAL</option>
+                                                    <option value="NEGATIVO" >NEGATIVO</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-2 col-md-2 col-12 mb-1 d-flex align-items-center">
+                                            <div class="form-group">
+                                                <label for="basicInput">Resultados</label>
+                                                <input type="number" class="form-control" id="basicInput" name="nresultados" placeholder="Cantidad" value="{{request.GET.nresultados}}"  />
+                                            </div>
+                                        </div>
+                                    
+                                        
+                                       
+                                        <div class="col-xl-4 col-md-6 col-12 mb-1 align-self-end">
+                                            <div class="form-group">
+                                                <button type="submit" name="btnBuscar" class="btn btn-primary">Buscar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" >
+                                        <div class=" custom-control custom-control-primary custom-checkbox d-flex ">
+                                            <div class="form-group" >
+                                                <input type="checkbox" name="formateado" class="custom-control-input" id="colorCheck1"  />
+                                                <label class="custom-control-label" for="colorCheck1">Formatear</label>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    
+                                </form>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="row" id="basic-table">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Resultados</h4>
+                                {% if format %}
+                                <h4>Cantidad : {{contador|stringformat:"07d"}}</h4>
+                                {% else %}
+                                <h4>Cantidad : {{contador}}</h4>
+                                {% endif %}
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr class="text-center" >
+                                                <th class="col-1" >Idioma</th>
+                                                <th class="col-2" >Rating</th>
+                                                <th class="col-1" >Tipo</th>
+                                                <th class="col-3" >Texto</th>
+                                                <th>Sentimiento</th>
+                                                <th>Score</th>
+    
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% if lista_analisis %}
+                                            {% for element in lista_analisis %}
+                                            <tr class="text-center" >
+                                                <td>
+                                                    
+                                                    {% if element.idioma == 'es' %}
+                                                    <span><img src="https://www.countryflagicons.com/FLAT/16/ES.png"></span>
+                                                    {% else %}
+                                                    <span><img src="https://www.countryflagicons.com/FLAT/16/US.png"></span>
+                                                    {% endif %}
+                                                </td>
+                                                <td class="text-center" >
+                                                    <div class="item-rating">
+                                                        <ul class="unstyled-list list-inline">
+                                                            {% with ''|center:element.rating as range %}
+                                                                {% for x in range %}
+                                                                <li class="ratings-list-item"><i data-indice="1" data-feather="star" class="filled-star"></i></li>
+                                                                {% endfor %}
+                                                            {% endwith %}
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                                <td>{{element.tipo}}</td>
+                                                <td class="text-left" >
+                                                    <span class="d-inline-block text-truncate font-italic" style="max-width: 250px;">
+                                                        {{element.texto}}
+                                                      </span>
+                                                </td>
+                                                <td>
+                                                    {% if element.label == 'POSITIVO' %}
+                                                    <span class="badge badge-success">{{element.label}}</span>
+                                                    {% endif %}
+                                                    {% if element.label == 'NEUTRAL' %}
+                                                    <span class="badge badge-info">{{element.label}}</span>
+                                                    {% endif %}
+                                                    {% if element.label == 'NEGATIVO' %}
+                                                    <span class="badge badge-danger">{{element.label}}</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <strong>{{element.score | floatformat:4}}</strong> 
+                                                    {{element.score | floatformat:4}}
+                                                    {{element.score }}
+                                                </td>
+                                                
+                                            </tr>
+                                            {% endfor %}
+                                            {% else %}
+                                            <h2>No Hay Resultados...</h2>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-left" id="modalCliente" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+         
+            
+    {% endblock content %}
+
+
+
+    {% block page_js %}
+    <script>
+        //REMUEVE SPAN FILTRADO
+    $('#spanFiltrado').click(function(){
+        window.location = $(this).data("url")
+    })
+        $(document).ready(function() {
+            console.log( "ready!" );
+            let formateado = getUrlParameter("formateado")
+            $('#idSpinner').hide() 
+            {% if filtrado %}
+                let select_sentimiento = getUrlParameter("sentimiento")
+                if (select_sentimiento){
+                    $('#selectSentimiento').val(select_sentimiento).trigger('change');
+                }
+                if (formateado){
+                    $('#colorCheck1').prop('checked', true);
+                }
+
+                
+            {% endif %}
+          
+            
+        });
+        
+    </script>
+
+    {% endblock page_js %}
